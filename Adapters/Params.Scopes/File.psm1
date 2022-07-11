@@ -1,11 +1,11 @@
-function Get-CasaScopedParamValue {
+function Get-AtomScopedParamValue {
     Param(
-        $CasaKey
+        $AtomKey
     )
     
     
-    $valuePath = "C:\Code\_Casa_values"
-    $keyRelPath = $CasaKey -replace " ","\"
+    $valuePath = "C:\Code\_Atom_values"
+    $keyRelPath = $AtomKey -replace " ","\"
     $valuePathFinal = $valuePath | Join-Path -ChildPath $keyRelPath
     $valueFilePath = $valuePathFinal | Join-Path -ChildPath "value.xml"
 
@@ -15,13 +15,13 @@ function Get-CasaScopedParamValue {
     }
 }
 
-function Set-CasaScopedParamValue {
+function Set-AtomScopedParamValue {
     Param(
-        $CasaKey,
+        $AtomKey,
         $Value
     )
-    $valuePath = "C:\Code\_Casa_values"
-    $keyRelPath = $CasaKey -replace " ","\"
+    $valuePath = "C:\Code\_Atom_values"
+    $keyRelPath = $AtomKey -replace " ","\"
     
     $valuePathFinal = $valuePath | Join-Path -ChildPath $keyRelPath
     New-Item $valuePathFinal -ItemType Directory -Force

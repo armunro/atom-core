@@ -1,4 +1,4 @@
-function New-CasaPackage {
+function New-AtomPackage {
     Param(
         [string]
         [Parameter(Mandatory = $true)]
@@ -15,7 +15,7 @@ function New-CasaPackage {
 }
 
 
-function Install-CasaPackage {
+function Install-AtomPackage {
     Param (
         [Parameter(ValueFromPipeline = $true)]
         $InputObject
@@ -24,9 +24,9 @@ function Install-CasaPackage {
     PROCESS {
         Write-Host $InputObject.Name $InputObject.Provider
 
-        Invoke-CasaExtensionModule `
+        Invoke-AtomExtensionModule `
             -Type "Packages.Providers" -Name $InputObject.Provider `
-            -FunctionName "Install-CasaPackageExt" `
+            -FunctionName "Install-AtomPackageExt" `
             -FunctionArgs @{ PackageName = $InputObject.Name }
     }
 }

@@ -1,4 +1,4 @@
-function Install-CasaPackageExt {
+function Install-AtomPackageExt {
     Param(
         $PackageName
     )

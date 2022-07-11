@@ -1,4 +1,4 @@
-function Get-CasaCommandParams {
+function Get-AtomCommandParams {
     param(
         [Parameter(ValueFromPipeline = $true)]
         $Command   
@@ -28,7 +28,7 @@ function Get-CasaCommandParams {
 
 }
 
-function Invoke-CasaCommand {
+function Invoke-AtomCommand {
     [CmdletBinding()]
     [Alias("amp")]
     param (
@@ -40,24 +40,24 @@ function Invoke-CasaCommand {
 
     if ($Params) {
         $Params.Keys | Foreach-Object {
-            Set-CasaParamValue -CasaKey ($Command | Get-CasaCommandKey -ParamName $_) -Scope Invoke -Value $Params[$_]
+            Set-AtomParamValue -AtomKey ($Command | Get-AtomCommandKey -ParamName $_) -Scope Invoke -Value $Params[$_]
             
             Write-Host $Params[$_]
         }
     }
 
-    Write-CasaBanner -Verb Parameters -Type Command -Icon ""
-    $commandParams = ($Command | Get-CasaCommandParams)
+    Write-AtomBanner -Verb Parameters -Type Command -Icon ""
+    $commandParams = ($Command | Get-AtomCommandParams)
     
 
     $invokeParams = @{}
     foreach ($paramName in $commandParams.Keys) {
         $param = $commandParams[$paramName]
-        $CasaKey = ($Command | Get-CasaCommandKey -ParamName $paramName)
-        $paramValue = ($CasaKey | Get-CasaParamValue)
+        $AtomKey = ($Command | Get-AtomCommandKey -ParamName $paramName)
+        $paramValue = ($AtomKey | Get-AtomParamValue)
         
 
-        Write-CasaListItem -Text $($param.Name) -Icon "" -NoNewline
+        Write-AtomListItem -Text $($param.Name) -Icon "" -NoNewline
 
 
         Write-Host " [Mandatory: $($param.Mandatory)]" -NoNewline -ForegroundColor Blue
@@ -73,7 +73,7 @@ function Invoke-CasaCommand {
     }
     
     
-    Write-CasaBanner -Verb Exec -Type $Command.Name -Icon "異"
+    Write-AtomBanner -Verb Exec -Type $Command.Name -Icon "異"
     & $Command @invokeParams
 
 }

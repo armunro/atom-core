@@ -9,8 +9,8 @@ Import-Module powershell-yaml
 Import-Module PSWriteColor
 
 Get-Module -All | Where-Object {
-    $_.Name.ToLower().StartsWith("casa") } 
+    $_.Name.ToLower().StartsWith("atom") } 
 | Remove-Module -Force
 
-Import-Module $PSScriptRoot/CasaPS.psm1 -Force -DisableNameChecking
-Import-CasaPersona $PersonaFile | Start-Casa -NoStartupCommands:$NoStartupCommands
+Import-Module $PSScriptRoot/AtomPS.psm1 -Force -DisableNameChecking
+Import-AtomPersona $PersonaFile | Start-Atom -NoStartupCommands:$NoStartupCommands

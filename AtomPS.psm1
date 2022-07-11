@@ -1,4 +1,4 @@
-function Import-CasaPersona {
+function Import-AtomPersona {
     [CmdletBinding()]
     param(
         $File
@@ -27,8 +27,8 @@ function Import-CasaPersona {
     }
 }
 
-function Start-Casa {
-    [Alias("casatart")]
+function Start-Atom {
+    [Alias("atomstart")]
     [CmdletBinding()]
     Param(
         [Parameter(ValueFromPipeline = $true)]
@@ -37,46 +37,46 @@ function Start-Casa {
         $NoStartupCommands
     )
     
-    $Global:CasaPersona = $Persona
+    $Global:AtomPersona = $Persona
 
-    Write-CasaBanner -Verb "Framework" -Type "Disovery"
-    Import-CasaFramework -Persona $Persona
+    Write-AtomBanner -Verb "Framework" -Type "Disovery"
+    Import-AtomFramework -Persona $Persona
     
-    Write-CasaBanner -Verb "Adapter" -Type "Param.Scopes" -Icon "ﮣ"
-    Register-CasaAdapters -Persona $Persona -Name Params.Scopes
+    Write-AtomBanner -Verb "Adapter" -Type "Param.Scopes" -Icon "ﮣ"
+    Register-AtomAdapters -Persona $Persona -Name Params.Scopes
     
-    Write-CasaBanner -Verb "Adapter" -Type "Packages.Providers" -Icon "ﮣ"
-    Register-CasaAdapters -Persona $Persona -Name Packages.Providers 
+    Write-AtomBanner -Verb "Adapter" -Type "Packages.Providers" -Icon "ﮣ"
+    Register-AtomAdapters -Persona $Persona -Name Packages.Providers 
 
-    Write-CasaBanner -Type "Zones" -Depth 0
-    $Persona | Import-CasaPersonaModules
+    Write-AtomBanner -Type "Zones" -Depth 0
+    $Persona | Import-AtomPersonaModules
     
     if (-not $NoStartupCommands) {
-        #Write-CasaStageHeader -Message "Run Persona Startup Commands"
-        $Persona | Invoke-CasaStartupCommands
+        #Write-AtomStageHeader -Message "Run Persona Startup Commands"
+        $Persona | Invoke-AtomStartupCommands
     }
     
 }
 
-function Get-CasaCurrentPersona {
+function Get-AtomCurrentPersona {
     [Alias("persona")]
     Param()
-    $Global:CasaPersona
+    $Global:AtomPersona
 }
 
 
-function Import-CasaFramework {
+function Import-AtomFramework {
     Param(
         $Persona
     )
 
     Get-ChildItem $Persona.Paths.Frameworks | ForEach-Object {
-        Write-CasaListItem -File $_
-        New-Module -ScriptBlock ([scriptblock]::Create((Get-Content $_ -Raw))) -Name "CasaPS.Frameworks.$([System.IO.Path]::GetFileNameWithoutExtension($_.Name))" | Import-Module -Scope Global -Force
+        Write-AtomListItem -File $_
+        New-Module -ScriptBlock ([scriptblock]::Create((Get-Content $_ -Raw))) -Name "AtomPS.Frameworks.$([System.IO.Path]::GetFileNameWithoutExtension($_.Name))" | Import-Module -Scope Global -Force
      }
 }
 
-function Register-CasaAdapters {
+function Register-AtomAdapters {
     Param (
         [Parameter(ValueFromPipeline = $true)]
         $Persona,
@@ -85,17 +85,17 @@ function Register-CasaAdapters {
     $path = [System.IO.Path]::Combine($Persona.Paths.Adapters, $Name )
     $adapterFiles = Get-ChildItem -File -Path $path -Recurse
     $adapterFiles | ForEach-Object {
-        $environment = Get-CasaCurrentPersona
+        $environment = Get-AtomCurrentPersona
         if (-not $environment.Adapters.ContainsKey($Name)) {
             $environment.Adapters.Add($Name, @{})
         }
         $adapterName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)  
         $environment.Adapters[$Name][$adapterName] = $_.FullName
-        Write-CasaListItem -File $_  -Icon 'ﮣ'
+        Write-AtomListItem -File $_  -Icon 'ﮣ'
     }
 }
 
-function Get-CasaAdapterPath {
+function Get-AtomAdapterPath {
     Param(
         [Parameter(Mandatory = $true)]
         [string]
@@ -104,7 +104,7 @@ function Get-CasaAdapterPath {
         [Parameter(Mandatory = $true)]
         $Name
     )
-    $extensionPath = Invoke-Expression "(Get-CasaCurrentPersona).Adapters['$Type']['$Name']"
+    $extensionPath = Invoke-Expression "(Get-AtomCurrentPersona).Adapters['$Type']['$Name']"
     if (-not $extensionPath) {
         throw "An adapter with the type '$Type' could not be resolved with name '$Name'"
     }
@@ -112,7 +112,7 @@ function Get-CasaAdapterPath {
 }
 
 
-function Invoke-CasaExtensionModule {
+function Invoke-AtomExtensionModule {
     Param(
         [Parameter(Mandatory = $true)]
         [string]
@@ -126,25 +126,25 @@ function Invoke-CasaExtensionModule {
         [Hashtable] $FunctionArgs
     )
 
-    $extensionModulePath = Get-CasaAdapterPath -Type $Type -Name $Name
+    $extensionModulePath = Get-AtomAdapterPath -Type $Type -Name $Name
     $module = Import-Module $extensionModulePath -Scope Local -PassThru -Force
     $command = $module.ExportedCommands[$FunctionName].ScriptBlock
 
     return & $command @FunctionArgs
 
 }
-function Update-CasaPersona {
-    [Alias("casaupdate")]
+function Update-AtomPersona {
+    [Alias("atomupdate")]
     Param(
         [Switch]
         $StartupCommands
     )
-    $starterPath = Join-Path -Path $PSScriptRoot -ChildPath "CasaPS.ps1"
-    & $starterPath -PersonaFile (Get-CasaCurrentPersona).Source -NoStartupCommands:(-not $StartupCommands)
+    $starterPath = Join-Path -Path $PSScriptRoot -ChildPath "AtomPS.ps1"
+    & $starterPath -PersonaFile (Get-AtomCurrentPersona).Source -NoStartupCommands:(-not $StartupCommands)
 }
 
 
-function Invoke-CasaStartupCommands {
+function Invoke-AtomStartupCommands {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true)]
@@ -178,7 +178,7 @@ function Invoke-CasaStartupCommands {
     }
 }
 
-function Install-CasaPersonaPackages {
+function Install-AtomPersonaPackages {
     Param(
         [Parameter(ValueFromPipeline = $true)]
         $Persona,
@@ -187,12 +187,12 @@ function Install-CasaPersonaPackages {
     foreach ($pack in $Persona.Zones.packages ) {
 
         if (($null -eq $Provider) -or ($Provider -and ($pack.provider -eq $Provider))) {
-            New-CasaPackage -Name $pack.package -Provider $pack.provider | Install-CasaPackage
+            New-AtomPackage -Name $pack.package -Provider $pack.provider | Install-AtomPackage
         }
     }    
 }
 
-function Write-CasaBanner {
+function Write-AtomBanner {
     Param(
         $Type,
         $Depth = 0,
@@ -227,7 +227,7 @@ function Write-CasaBanner {
     Write-Color -Text $chars -BackGroundColor $bgList -Color $fgList
 }
 
-function Write-CasaListItem {
+function Write-AtomListItem {
     Param(
         $File,
         $Text,
@@ -257,7 +257,7 @@ function Write-CasaListItem {
     Write-Host $finalItemText -NoNewline:$NoNewLine
 }
 
-function Import-CasaPersonaModules {
+function Import-AtomPersonaModules {
     Param(
         [Parameter(ValueFromPipeline = $true)]
         $Persona
@@ -265,15 +265,15 @@ function Import-CasaPersonaModules {
     PROCESS {
         $Persona.Zones | ForEach-Object {
             $zone = $_
-            Write-CasaBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 1 -Verb "Import Zone" -Icon ''
+            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 1 -Verb "Import Zone" -Icon ''
             $moduleFiles = Get-ChildItem $_.path -Recurse -Include "*.psm1"
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
                 $aliases = $zoneModule.ExportedAliases.Keys -join " ﴞ "
-                Write-CasaListItem -File $_.FullName -Depth 1 -Icon 'ﰩ' 
+                Write-AtomListItem -File $_.FullName -Depth 1 -Icon 'ﰩ' 
                 if ($aliases) {
                   
-                    Write-CasaListItem -Text $aliases -Depth 2 -Icon 'ﴞ'                     
+                    Write-AtomListItem -Text $aliases -Depth 2 -Icon 'ﴞ'                     
                 }
             }
         }

@@ -1,4 +1,4 @@
-function New-CasaCommandProxy{
+function New-AtomCommandProxy{
     Param(
         [Parameter(mandatory = $true, ValueFromPipeline = $true)]
         $Command,
@@ -28,7 +28,7 @@ function New-CasaCommandProxy{
         Param(
             $proxyParamBlock
         )
-        Invoke-CasaCommand -Command (Get-Command $($Command.Name) )
+        Invoke-AtomCommand -Command (Get-Command $($Command.Name) )
 "@
    
 

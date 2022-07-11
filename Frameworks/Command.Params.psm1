@@ -1,27 +1,27 @@
-function Get-CasaParamValue {
+function Get-AtomParamValue {
 
     [Alias("ampget")]
     Param(
         [Parameter(Position = 0)]
         $Scope,
         [Parameter(ValueFromPipeline = $true, Mandatory = $true)]
-        $CasaKey
+        $AtomKey
     )
 
     $paramValue
     if ($Scope) {
-        $paramValue = Invoke-CasaExtensionModule `
+        $paramValue = Invoke-AtomExtensionModule `
             -Type "Params.Scopes" -Name $Scope `
-            -FunctionName:"Get-CasaScopedParamValue" `
-            -FunctionArgs @{ CasaKey = $CasaKey }
+            -FunctionName:"Get-AtomScopedParamValue" `
+            -FunctionArgs @{ AtomKey = $AtomKey }
     }
     else {
         $scopeOrder = @("File", "Session", "Invoke")
         $scopeOrder | ForEach-Object {
-            $scopeValue = Invoke-CasaExtensionModule `
+            $scopeValue = Invoke-AtomExtensionModule `
                 -Type "Params.Scopes" -Name $_ `
-                -FunctionName:"Get-CasaScopedParamValue" `
-                -FunctionArgs @{ CasaKey = $CasaKey }
+                -FunctionName:"Get-AtomScopedParamValue" `
+                -FunctionArgs @{ AtomKey = $AtomKey }
             if ($scopeValue) {
                 $paramValue = $scopeValue
             }
@@ -32,13 +32,13 @@ function Get-CasaParamValue {
 }
 
 
-function Set-CasaParamValue {
+function Set-AtomParamValue {
 
-    [Alias("casaset")]
+    [Alias("atomset")]
     Param(
         
         [Parameter(ValueFromPipeline = $true)]
-        $CasaKey,
+        $AtomKey,
         [Parameter(Position = 0)]
         $Scope,
         [Parameter(Position = 1)]
@@ -52,11 +52,11 @@ function Set-CasaParamValue {
         $preparedValue = ( ConvertTo-SecureString $preparedValue  -AsPlainText)
     }
 
-    Invoke-CasaExtensionModule `
+    Invoke-AtomExtensionModule `
         -Type "Params.Scopes" -Name $Scope `
-        -FunctionName:"Set-CasaScopedParamValue" `
+        -FunctionName:"Set-AtomScopedParamValue" `
         -FunctionArgs @{
-        CasaKey = $CasaKey 
+        AtomKey = $AtomKey 
         Value   = $preparedValue
     }
 }

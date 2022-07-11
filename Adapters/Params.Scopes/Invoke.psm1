@@ -1,16 +1,16 @@
-function Get-CasaScopedParamValue {
+function Get-AtomScopedParamValue {
     Param(
-        $CasaKey
+        $AtomKey
     )
-    $CasaEnv = Get-CasaCurrentPersona
-    $CasaEnv.State.InvokeParams[$CasaKey]
+    $AtomEnv = Get-AtomCurrentPersona
+    $AtomEnv.State.InvokeParams[$AtomKey]
 }
 
-function Set-CasaScopedParamValue {
+function Set-AtomScopedParamValue {
     Param(
-        $CasaKey,
+        $AtomKey,
         $Value
     )
-    $CasaEnv = Get-CasaCurrentPersona
-    $CasaEnv.State.InvokeParams[$CasaKey] = $Value
+    $AtomEnv = Get-AtomCurrentPersona
+    $AtomEnv.State.InvokeParams[$AtomKey] = $Value
 }

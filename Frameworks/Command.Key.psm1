@@ -1,4 +1,4 @@
-function Get-CasaCommandKey ()
+function Get-AtomCommandKey ()
 {
     [Alias("ampkey")]
     Param(
@@ -19,12 +19,12 @@ function Get-CasaCommandKey ()
     return $commandKey
 }
 
-function Split-CasaKey {
+function Split-AtomKey {
     Param(
         [Parameter(ValueFromPipeline=$true)]
-        $CasaKey
+        $AtomKey
     )
-    $comps = $CasaKey -split " "
+    $comps = $AtomKey -split " "
     return @{
         Zone = $comps[0]
         Module = $comps[1]
