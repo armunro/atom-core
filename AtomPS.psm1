@@ -173,7 +173,7 @@ function Invoke-AtomStartupCommands {
         }
 
         if ($shouldInvoke) {
-            & "$($_.command)"
+            Invoke-Expression "$($_.command)"
         }
     }
 }
