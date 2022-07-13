@@ -71,9 +71,10 @@ function Import-AtomFramework {
     )
 
     Get-ChildItem $Persona.Paths.Frameworks | ForEach-Object {
-        Write-AtomListItem -File $_
+        Write-AtomListItem -File $_ -NoNewline
         New-Module -ScriptBlock ([scriptblock]::Create((Get-Content $_ -Raw))) -Name "AtomPS.Frameworks.$([System.IO.Path]::GetFileNameWithoutExtension($_.Name))" | Import-Module -Scope Global -Force
      }
+     Write-Host
 }
 
 function Register-AtomAdapters {
@@ -91,8 +92,10 @@ function Register-AtomAdapters {
         }
         $adapterName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)  
         $environment.Adapters[$Name][$adapterName] = $_.FullName
-        Write-AtomListItem -File $_  -Icon 'ﮣ'
+        Write-AtomListItem -File $_  -Icon 'ﮣ' -NoNewline
     }
+    Write-Host
+    
 }
 
 function Get-AtomAdapterPath {
@@ -134,7 +137,7 @@ function Invoke-AtomExtensionModule {
 
 }
 function Update-AtomPersona {
-    [Alias("atomupdate")]
+    [Alias("atup")]
     Param(
         [Switch]
         $StartupCommands
