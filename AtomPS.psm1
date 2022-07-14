@@ -48,7 +48,6 @@ function Start-Atom {
     Write-AtomBanner -Verb "Adapter" -Type "Packages.Providers" -Icon "ﮣ"
     Register-AtomAdapters -Persona $Persona -Name Packages.Providers 
 
-    Write-AtomBanner -Type "Zones" -Depth 0
     $Persona | Import-AtomPersonaModules
     
     if (-not $NoStartupCommands) {
@@ -268,15 +267,15 @@ function Import-AtomPersonaModules {
     PROCESS {
         $Persona.Zones | ForEach-Object {
             $zone = $_
-            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 1 -Verb "Import Zone" -Icon ''
+            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon ''
             $moduleFiles = Get-ChildItem $_.path -Recurse -Include "*.psm1"
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
-                $aliases = $zoneModule.ExportedAliases.Keys -join " ﴞ "
-                Write-AtomListItem -File $_.FullName -Depth 1 -Icon 'ﰩ' 
+                $aliases = $zoneModule.ExportedAliases.Keys -join ", "
+                Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ' 
                 if ($aliases) {
                   
-                    Write-AtomListItem -Text $aliases -Depth 2 -Icon 'ﴞ'                     
+                    Write-AtomListItem -Text $aliases -Depth 1 -Icon ' '                     
                 }
             }
         }
