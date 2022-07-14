@@ -76,6 +76,29 @@ function Import-AtomFramework {
      Write-Host
 }
 
+function Import-AtomPersonaModules {
+    Param(
+        [Parameter(ValueFromPipeline = $true)]
+        $Persona
+    )
+    PROCESS {
+        $Persona.Zones | ForEach-Object {
+            $zone = $_
+            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon '' -SecondaryColor $zone.color -PrimaryColor DarkGray
+            $moduleFiles = Get-ChildItem $_.path -Recurse -Include "*.psm1"
+            $moduleFiles | ForEach-Object {
+                $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
+                $aliases = $zoneModule.ExportedAliases.Keys -join ", "
+                Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ' 
+                if ($aliases) {
+                  
+                    Write-AtomListItem -Text $aliases -Depth 1 -Icon ' '                     
+                }
+            }
+        }
+    }
+}
+
 function Register-AtomAdapters {
     Param (
         [Parameter(ValueFromPipeline = $true)]
@@ -155,7 +178,7 @@ function Invoke-AtomStartupCommands {
 
     $Persona.StartupCommands | ForEach-Object {
         
-        Write-Host -ForegroundColor DarkBlue "Startup $($_.name) "
+        Write-AtomBanner -Verb "Start" -Type $_.name -Icon ""
         $shouldInvoke = $true
 
 
@@ -259,25 +282,3 @@ function Write-AtomListItem {
     Write-Host $finalItemText -NoNewline:$NoNewLine
 }
 
-function Import-AtomPersonaModules {
-    Param(
-        [Parameter(ValueFromPipeline = $true)]
-        $Persona
-    )
-    PROCESS {
-        $Persona.Zones | ForEach-Object {
-            $zone = $_
-            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon ''
-            $moduleFiles = Get-ChildItem $_.path -Recurse -Include "*.psm1"
-            $moduleFiles | ForEach-Object {
-                $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
-                $aliases = $zoneModule.ExportedAliases.Keys -join ", "
-                Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ' 
-                if ($aliases) {
-                  
-                    Write-AtomListItem -Text $aliases -Depth 1 -Icon ' '                     
-                }
-            }
-        }
-    }
-}
