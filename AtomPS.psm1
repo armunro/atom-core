@@ -84,7 +84,7 @@ function Import-AtomPersonaModules {
     PROCESS {
         $Persona.Zones | ForEach-Object {
             $zone = $_
-            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon '' -SecondaryColor $zone.color -PrimaryColor DarkGray
+            Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon '' -SecondaryColor $zone.color -PrimaryColor "Dark$($zone.color)"
             $moduleFiles = Get-ChildItem $_.path -Recurse -Include "*.psm1"
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
@@ -268,8 +268,8 @@ function Write-AtomListItem {
     )
     $padding = (" " * $Depth)
     $finalItemText = ""
-    $chars = $("$padding", ' ', "$Icon ", "$Verb", '', " $Type" , ' ', "")
-    Write-Host  "$padding  $Icon " -ForegroundColor $IconColor -NoNewline
+    
+    Write-Host  "$padding $Icon " -ForegroundColor $IconColor -NoNewline
 
     if ($Text) {
         $finalItemText = $Text
