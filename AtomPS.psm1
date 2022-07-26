@@ -85,7 +85,9 @@ function Import-AtomPersonaModules {
         $Persona.Zones | ForEach-Object {
             $zone = $_
             Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon '' -SecondaryColor $zone.color -PrimaryColor "Dark$($zone.color)"
-            $moduleFiles = Get-ChildItem $_.path -Recurse -Include "*.psm1"
+            $imports = $_.modules | ForEach-Object {"$_.psm1"}
+            $moduleFiles = Get-ChildItem $_.path -Recurse -Include $imports
+                        
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
                 $aliases = $zoneModule.ExportedAliases.Keys -join ", "
