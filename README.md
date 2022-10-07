@@ -1,5 +1,5 @@
 # Introduction
-Atom is a PowerShell library for managing PowerShell modules sessions. The goals of this project are as follows:
+Atom is a PowerShell library for managing PowerShell modules and sessions. The goals of this project are as follows:
 1) Simplify organizing, finding and executing PowerShell commands without requiring any special syntax or libraries 
 2) Securely store command parameters and input them automatically when invoked later
 3) Make unattended execution easier 
@@ -11,10 +11,68 @@ Atom is a PowerShell library for managing PowerShell modules sessions. The goals
 
 # Getting Started
 
-```Powershell
-# Atom.ps1 simplifies a lot of the startup - Supply a persona file
-C:\Code\Atom\Atom.ps1 -PersonaFile C:\Code\Atom-mho\home.yaml
+## Prerequisites
 
+The core Atom framework doesn't rely on any other software to be installed. However, `git` is likely the easiest way to manage your Atom Zones. This can be done many ways but opening the following in a ClickOnce capable web-browser will quickly install any software needed.
+
+ **Easy up-to-date link to install any required software:**
+
+`https://boxstarter.org/package/nr/git`
+
+## Clone the framework and any zones
+```Powershell
+New-Item -Type Directory C:\Atom
+Set-Location C:\Atom\
+
+#Clone the core Atom framework
+git clone git@github.com:armunro/atom-core.git
+
+#Clone the public Atom Zone
+git clone git@github.com:armunro/atom-public.git
+
+#Clone my private repo for home stuff
+git clone git@github.com:armunro/atom-munro-private.git
+```
+
+## Create a Persona file
+Persona files are YAML config files that let you configure your expected PowerShell session state when Atom launches the persona.
+
+```yaml
+name: "home"
+description: "Modules for typical home use including MHO modules"
+zones:
+  - name: public
+    color: green
+    path: C:\Atom\atom-public
+    modules:
+      - "*Bitwarden*"
+      - "*Airtable*"
+  - name: munro
+    color: red
+    path: C:\Atom\atom-munro
+    modules:
+      - "AM.Projects.VCS*"
+    packages:
+      - provider: choco
+        package: obsidian
+      - provider: choco
+        package: bitwarden
+      - provider: PowerShellGet
+        package: JiraPS
+      - provider: PowerShellGet
+        package: Microsoft.Graph
+startupCommands:
+  - name: "Greeting"
+    command: 'Write-Host -ForegroundColor Magenta "Have a great day"'
+    prompt: false
+```
+
+## Launch an Atom Persona 
+Atom is farily modular and can be initiated in smaller, more effeceient configurations. However, for most people, the `Atom.ps1` script will provide the easiest startup.
+```PowerShell
+C:\Atom\atom-core\Atom.ps1 -PersonaFile C:\Code\atom-munro\home.yaml
+```
+```Powershell
 # Get the available parameters for a loaded command
 Get-Command Find-AirtableRecord | Get-AtomCommandParams
 #output below
