@@ -94,7 +94,7 @@ function Import-AtomPersonaModules {
                 Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ' 
                 if ($aliases) {
                   
-                    Write-AtomListItem -Text $aliases -Depth 1 -Icon ' '                     
+                    Write-AtomListItem -Text $aliases -Depth 1 -Icon ' ' -TextColor Magenta                    
                 }
             }
         }
@@ -182,8 +182,7 @@ function Invoke-AtomStartupCommands {
         
         Write-AtomBanner -Verb "Start" -Type $_.name -Icon ""
         $shouldInvoke = $true
-
-
+        
         if ($_.prompt) {
             $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Run $($_.name)."
             $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Skip it this time."
@@ -266,6 +265,7 @@ function Write-AtomListItem {
         $NoNewLine,
         [ConsoleColor]
         $IconColor = [System.ConsoleColor]::Blue,
+        $TextColor = [System.ConsoleColor]::White,
         $Kind = ""
     )
     $padding = (" " * $Depth)
@@ -281,6 +281,5 @@ function Write-AtomListItem {
             [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
         }
     }
-    Write-Host $finalItemText -NoNewline:$NoNewLine
+    Write-Host $finalItemText -NoNewline:$NoNewLine -ForegroundColor $TextColor
 }
-
