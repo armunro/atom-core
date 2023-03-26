@@ -90,11 +90,10 @@ function Import-AtomPersonaModules {
                         
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
-                $aliases = $zoneModule.ExportedAliases.Keys -join ", "
+                $functions = $zoneModule.ExportedFunctions.Keys -join ", "
                 Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ' 
-                if ($aliases) {
-                  
-                    Write-AtomListItem -Text $aliases -Depth 1 -Icon ' ' -TextColor Magenta                    
+                if ($functions) {
+                    Write-AtomListItem -Text $functions -Depth 1 -Icon ' ' -TextColor Magenta                    
                 }
             }
         }
@@ -204,19 +203,7 @@ function Invoke-AtomStartupCommands {
     }
 }
 
-function Install-AtomPersonaPackages {
-    Param(
-        [Parameter(ValueFromPipeline = $true)]
-        $Persona,
-        $Provider
-    )
-    foreach ($pack in $Persona.Zones.packages ) {
 
-        if (($null -eq $Provider) -or ($Provider -and ($pack.provider -eq $Provider))) {
-            New-AtomPackage -Name $pack.package -Provider $pack.provider | Install-AtomPackage
-        }
-    }    
-}
 
 function Write-AtomBanner {
     Param(

@@ -22,11 +22,24 @@ function Install-AtomPackage {
     )
 
     PROCESS {
+        
+        
         Write-Host $InputObject.Name $InputObject.Provider
 
         Invoke-AtomExtensionModule `
             -Type "Packages.Providers" -Name $InputObject.Provider `
             -FunctionName "Install-AtomPackageExt" `
             -FunctionArgs @{ PackageName = $InputObject.Name }
+    }
+}
+
+function Get-AtomPersonaPackages
+{
+    $persona = Get-AtomCurrentPersona
+    foreach ($provider in $persona.Zones.packages ) {
+        foreach($package in $provider.packages)
+        {
+            New-AtomPackage -Name $package -Provider $provider.provider 
+        }
     }
 }
