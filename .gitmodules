@@ -1,0 +1,6 @@
+[submodule "Zones/atom-public"]
+	path = Zones/atom-public
+	url = git@github.com:armunro/atom-public.git
+[submodule "Zones/atom-munro"]
+	path = Zones/atom-munro
+	url = git@github.com:armunro/atom-munro.git

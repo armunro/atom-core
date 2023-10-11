@@ -13,6 +13,7 @@ function Import-AtomPersona {
             Base       = $PSScriptRoot
             Frameworks = [System.IO.Path]::Combine($PSScriptRoot, "Frameworks")
             Adapters   = [System.IO.Path]::Combine($PSScriptRoot, "Adapters")
+            Zones   = [System.IO.Path]::Combine($PSScriptRoot, "Zones")
         }
         # Low-level stuff
         State           = @{ 
@@ -81,12 +82,20 @@ function Import-AtomPersonaModules {
         [Parameter(ValueFromPipeline = $true)]
         $Persona
     )
+    BEGIN{
+        
+    }
     PROCESS {
         $Persona.Zones | ForEach-Object {
             $zone = $_
             Write-AtomBanner -Type "$($zone.name.ToString().ToUpper())" -Depth 0 -Verb "Zone" -Icon '' -SecondaryColor $zone.color -PrimaryColor "Dark$($zone.color)"
             $imports = $_.modules | ForEach-Object {"$_.psm1"}
-            $moduleFiles = Get-ChildItem $_.path -Recurse -Include $imports
+            $zonePath = (Get-AtomCurrentPersona).Paths.Zones | Join-Path -ChildPath $zone.name
+            if($_.path) {
+                $zonePath = $_.path
+            }
+            
+            $moduleFiles = Get-ChildItem $zonePath -Recurse -Include $imports
                         
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
