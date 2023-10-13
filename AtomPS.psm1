@@ -13,7 +13,7 @@ function Import-AtomPersona {
             Base       = $PSScriptRoot
             Frameworks = [System.IO.Path]::Combine($PSScriptRoot, "Frameworks")
             Adapters   = [System.IO.Path]::Combine($PSScriptRoot, "Adapters")
-            Zones   = [System.IO.Path]::Combine($PSScriptRoot, "Zones")
+            Zones      = [System.IO.Path]::Combine($PSScriptRoot, "Zones")
         }
         # Low-level stuff
         State           = @{ 
@@ -146,6 +146,15 @@ function Get-AtomAdapterPath {
     return $extensionPath
 }
 
+function Get-AtomManifestFile{
+    Param(
+        $Zone,
+        $Component,
+        $Name
+    )
+    $path = (Get-AtomCurrentPersona).Paths.Zones | Join-Path -ChildPath $Zone -AdditionalChildPath "Manifest",$Component,$Name
+    $path
+}
 
 function Invoke-AtomExtensionModule {
     Param(
