@@ -3,4 +3,4 @@ function Install-AtomPackageExt {
         $PackageName
     )
         Invoke-Expression "choco.exe install $PackageName --force -y"
-}
+} 

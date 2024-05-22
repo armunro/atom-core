@@ -21,17 +21,16 @@ The core Atom framework doesn't rely on any other software to be installed. Howe
 
 ## Clone the framework and any zones
 ```Powershell
-New-Item -Type Directory C:\Atom
-Set-Location C:\Atom\
 
 #Clone the core Atom framework
 git clone git@github.com:armunro/atom-core.git
+Set-Location Zones
 
-#Clone the public Atom Zone
-git clone git@github.com:armunro/atom-public.git
+#Clone the public zone repo
+git submodule add git@github.com:armunro/atom-public.git
 
 #Clone my private repo for home stuff
-git clone git@github.com:armunro/atom-munro-private.git
+git submodule add git@github.com:armunro/atom-munro-private.git
 ```
 
 ## Create a Persona file
@@ -68,7 +67,7 @@ startupCommands:
 ```
 
 ## Launch an Atom Persona 
-Atom is farily modular and can be initiated in smaller, more effeceient configurations. However, for most people, the `Atom.ps1` script will provide the easiest startup.
+Atom is fairly modular and can be initiated in smaller, more efficient configurations. However, for most people, the `Atom.ps1` script will provide the easiest startup.
 ```PowerShell
 C:\Atom\atom-core\Atom.ps1 -PersonaFile C:\Code\atom-munro\home.yaml
 ```
