@@ -2,7 +2,8 @@
 Param (
     $PersonaFile,
     [Switch]
-    $NoStartupCommands
+    $NoStartupCommands,
+    $ZonePath
 )
 
 Import-Module powershell-yaml
@@ -13,4 +14,4 @@ Get-Module -All | Where-Object {
 | Remove-Module -Force
 
 Import-Module $PSScriptRoot/AtomPS.psm1 -Force -DisableNameChecking
-Import-AtomPersona $PersonaFile | Start-Atom -NoStartupCommands:$NoStartupCommands
+Import-AtomPersona $PersonaFile -ZonePath $ZonePath | Start-Atom -NoStartupCommands:$NoStartupCommands

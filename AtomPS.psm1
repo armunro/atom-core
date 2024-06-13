@@ -1,7 +1,8 @@
 function Import-AtomPersona {
     [CmdletBinding()]
     param(
-        $File
+        $File,
+        $ZonePath
     )
     
     $config = (Get-Content $File | ConvertFrom-Yaml)
@@ -13,7 +14,7 @@ function Import-AtomPersona {
             Base       = $PSScriptRoot
             Frameworks = [System.IO.Path]::Combine($PSScriptRoot, "Frameworks")
             Adapters   = [System.IO.Path]::Combine($PSScriptRoot, "Adapters")
-            Zones      = [System.IO.Path]::Combine($PSScriptRoot, "Zones")
+            Zones      = $ZonePath
         }
         # Low-level stuff
         State           = @{ 
@@ -96,13 +97,12 @@ function Import-AtomPersonaModules {
             }
             
             $moduleFiles = Get-ChildItem $zonePath -Recurse -Include $imports
-                        
             $moduleFiles | ForEach-Object {
                 $zoneModule = Import-Module $_ -Scope Global -Force -PassThru
                 $functions = $zoneModule.ExportedFunctions.Keys -join ", "
-                Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ' 
+                Write-AtomListItem -File $_.FullName -Depth 0 -Icon 'ﰩ'  -TextColor $zone.color
                 if ($functions) {
-                    Write-AtomListItem -Text $functions -Depth 1 -Icon ' ' -TextColor Magenta                    
+                    Write-AtomListItem -Text $functions -Depth 1 -Icon ' ' -TextColor $zone.color                    
                 }
             }
         }
